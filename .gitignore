@@ -1,0 +1,23 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Generated transcripts (local runs)
+output/
+
+# OS & editors
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets
+.env
+.env.*
