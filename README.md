@@ -1,24 +1,24 @@
 # YT Captions MD
 
-YouTube videolarının altyazılarını (captions) tek komutla **Markdown** dosyasına dönüştüren küçük bir CLI aracı.
+A small CLI that turns YouTube video captions into **Markdown** files in one command.
 
-API anahtarı gerekmez. Altyazılar `youtube-transcript-api` ile, video başlığı ve kanal adı `yt-dlp` ile (yalnızca metadata, video indirilmez) alınır.
+No API key required. Captions come from [youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api); title and channel metadata from [yt-dlp](https://github.com/yt-dlp/yt-dlp) (metadata only — no video download).
 
-## Özellikler
+## Features
 
-- **Çoklu URL formatı:** `youtube.com/watch`, `youtu.be`, `shorts`, ek query parametreleri (`&t=`, `&list=` …)
-- **Altyazı seçimi:** Önce elle yüklenen altyazılar, yoksa otomatik üretilen; `--lang` ile dil önceliği
-- **Okunabilir metin:** Parçalar birleştirilir, otomatik altyazıdaki tekrarlar temizlenir
-- **Markdown çıktı:** Başlık, URL, kanal, dil ve altyazı tipi üst bilgide
-- **Güvenli dosya adı:** Başlıktan türetilir; çakışmada dosya adına video ID eklenir (üzerine yazılmaz)
-- **Dayanıklılık:** Geçersiz URL veya altyazı yoksa atlanır; ağ hatalarında 3 denemeye kadar exponential backoff
+- **URL formats:** `youtube.com/watch`, `youtu.be`, `shorts`, extra query params (`&t=`, `&list=`, …)
+- **Caption selection:** Manual captions first, then auto-generated; optional `--lang` preference order
+- **Readable text:** Merges caption fragments and deduplicates common auto-caption overlaps
+- **Markdown output:** Title, URL, channel, language, and caption type in the header
+- **Safe filenames:** Derived from the video title; on collision, the video ID is appended (no silent overwrite)
+- **Resilience:** Skips bad URLs and missing captions; retries network errors up to 3 times with exponential backoff
 
-## Gereksinimler
+## Requirements
 
 - Python **3.10+**
-- İnternet bağlantısı
+- Network access
 
-## Kurulum
+## Install
 
 ```bash
 git clone https://github.com/metaxylen/yt-captions-md.git
@@ -29,70 +29,70 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## Kullanım
+## Usage
 
 ```bash
-# Tek video
+# Single video
 python main.py "https://www.youtube.com/watch?v=VIDEO_ID"
 
-# Birden fazla video
+# Multiple videos
 python main.py URL1 URL2
 
-# Dosyadan (satır başına bir URL; # ile başlayanlar ve boş satırlar yok sayılır)
+# From a file (one URL per line; blank lines and # comments ignored)
 python main.py --file urls.txt
 
-# Dil önceliği, paragraf zaman damgası, çıktı klasörü
+# Language preference, paragraph timestamps, output directory
 python main.py --lang tr,en --timestamps --out ./output URL
 ```
 
-### Seçenekler
+### Options
 
-| Seçenek | Açıklama |
-|--------|----------|
-| `--lang tr,en` | Dil kodları (virgülle); önce manuel, sonra otomatik altyazı |
-| `--timestamps` | Her paragrafın başına `[mm:ss]` ekle |
-| `--out <klasör>` | Çıktı dizini (varsayılan: `output/`) |
-| `--file`, `-f` | URL listesi dosyası |
+| Flag | Description |
+|------|-------------|
+| `--lang tr,en` | Comma-separated language codes; manual captions preferred over auto-generated |
+| `--timestamps` | Prefix each paragraph with `[mm:ss]` |
+| `--out <dir>` | Output directory (default: `output/`) |
+| `--file`, `-f` | Path to a URL list file |
 
-## Örnek çıktı
+## Example output
 
 ```markdown
-# Video Başlığı
+# Video Title
 
 - URL: https://www.youtube.com/watch?v=...
-- Channel: Kanal Adı
-- Language: tr
+- Channel: Channel Name
+- Language: en
 - Type: manual
 
 ---
 
-Transkript metni burada, paragraflar arasında boş satır olmadan...
+Transcript body here, one paragraph per line without blank lines between them...
 ```
 
-## Proje yapısı
+## Project layout
 
 ```
-├── main.py                 # CLI giriş noktası
+├── main.py                 # CLI entrypoint
 ├── youtube_transcript/
-│   ├── urls.py             # Video ID çıkarma
-│   ├── transcript.py       # Altyazı indirme ve yeniden deneme
-│   ├── metadata.py         # Başlık / kanal (yt-dlp)
-│   ├── markdown.py         # Birleştirme ve .md biçimi
-│   └── files.py            # Dosya adı ve yazma
+│   ├── urls.py             # Video ID parsing
+│   ├── transcript.py       # Fetch captions and retries
+│   ├── metadata.py         # Title / channel via yt-dlp
+│   ├── markdown.py         # Merge logic and document format
+│   └── files.py            # Filename sanitization and writes
 ├── tests/
 └── requirements.txt
 ```
 
-## Testler
+## Tests
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-## Lisans
+## License
 
 [MIT](LICENSE)
 
-## Not
+## Note
 
-Bu araç yalnızca YouTube’un herkese açık altyazı verisini kullanır. İçeriğin telif ve kullanım koşullarına uygun kullanım sizin sorumluluğunuzdadır.
+This tool only uses publicly available YouTube caption data. You are responsible for complying with copyright and YouTube’s terms of use.
