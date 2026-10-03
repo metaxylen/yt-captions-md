@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Backward-compatible entrypoint when running from the repo root."""
+"""Allow: python -m youtube_transcript <url>"""
 
 from youtube_transcript.cli import main
 

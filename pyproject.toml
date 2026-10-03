@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yt-captions-md"
+version = "0.1.0"
+description = "CLI to save YouTube captions as Markdown files (no API key)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = [
+    "youtube-transcript-api>=0.6.2",
+    "yt-dlp>=2024.1.0",
+]
+
+[project.scripts]
+yt-captions-md = "youtube_transcript.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["youtube_transcript*"]
